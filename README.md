@@ -8,6 +8,7 @@ coverage (run unit tests coverage): npm run coverage
 run locally: 
 1. set environment variable for to set the authentication token
 export AUTH_TOKEN=<new-token>
+export CLIENT_TOKEN=<api-key>
 2. run the service:
 npm run dev
 ```

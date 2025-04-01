@@ -7,8 +7,44 @@ import { logger } from "hono/logger";
 import { health } from "./routers/health.js";
 import { stock } from "./routers/stock.js";
 
-const app = new OpenAPIHono();
+import { DuckDBInstance } from '@duckdb/node-api';
+
+import './workers/report.cjs'
+import './workers/stock.cjs'
+import init from './workers/initialize.cjs'
+import type { ContentfulStatusCode } from "hono/utils/http-status";
+
+type Env = {
+  Variables: {
+    db: DuckDBInstance
+  }
+}
+
+
+const app = new OpenAPIHono<Env>();
 app.use(logger());
+
+app.use(async (ctx, next) => {
+  const instance = await DuckDBInstance.create('trading.db');
+  const conn = await instance.connect();
+  init(conn)
+
+  ctx.set('db', conn)
+  try{
+    await next()
+  }
+  catch(err){
+    return ctx.json(
+      {
+        message: err
+      },
+      500 as ContentfulStatusCode
+    )
+  }
+  finally{
+    conn.disconnectSync()
+  }
+})
 
 app.route("/health", health);
 app.route("/stock", stock);
