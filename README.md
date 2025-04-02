@@ -24,6 +24,28 @@ export EMAIL_CLIENT_TOKEN=SG.p1kjWM5hQRC2cuIrswW_lA.xkpdU1FYfguv43hWfeL7OhzOfKPc
         - EMAIL_CLIENT_SERVER
 2. run the service:
 npm run dev
+After initialize the service wait until the startup process is finished, it looks like:
+mandelbrot@pop-os:~/workspace/tests/fuse-trading-test$ npm run dev
+
+> dev
+> tsx watch src/index.ts
+
+Set the schedule for worker: report
+Set the schedule for worker: stockGathering
+Received from worker stockGathering: start-up -- Gathering stock information to avoid availability issues. --
+https://api.challenge.fusefinance.com/stocks
+Scheduled each: * * * * *
+Scheduled each: */5 * * * *
+printing page:  1
+https://api.challenge.fusefinance.com/stocks?nextToken=eyJzeW1ib2wiOiJDU0NPIn0%3D
+printing page:  2
+https://api.challenge.fusefinance.com/stocks?nextToken=eyJzeW1ib2wiOiJIRCJ9
+printing page:  3
+https://api.challenge.fusefinance.com/stocks?nextToken=eyJzeW1ib2wiOiJNUyJ9
+printing page:  4
+https://api.challenge.fusefinance.com/stocks?nextToken=eyJzeW1ib2wiOiJNU0ZUIn0%3D
+printing page:  5
+
 ```
 open docs http://localhost:3000/ui
 ```
