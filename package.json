@@ -4,7 +4,7 @@
   "scripts": {
     "dev": "tsx watch src/index.ts",
     "lint": "eslint src __tests__",
-    "format": "prettier --check --cache \"src/**/*.{js,ts,tsx}\" & prettier --write \"src/**/*.{js,ts,tsx}\"",
+    "format": "prettier --check --cache \"src/**/*.{js,ts,tsx,.mjs,.cjs}\" & prettier --write \"src/**/*.{js,ts,tsx,.mjs,.cjs}\"",
     "test": "vitest --run",
     "coverage": "vitest run --coverage"
   },
@@ -14,12 +14,11 @@
     "@hono/swagger-ui": "^0.5.1",
     "@hono/zod-openapi": "^0.19.2",
     "@hono/zod-validator": "^0.4.3",
-    "@ronin/hono": "^0.1.2",
     "duckdb": "^1.2.1",
     "hono": "^4.7.5",
     "node-cron": "^3.0.3",
     "node-fetch": "^3.3.2",
-    "ronin": "^6.4.4",
+    "nodemailer": "^6.10.0",
     "ts-node": "^10.9.2"
   },
   "devDependencies": {

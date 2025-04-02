@@ -1,16 +1,10 @@
-const setUpWorker = require('./handler.cjs');
+/* eslint-disable no-undef */
+
 const { Worker } = require('worker_threads');
 const getSettingsDefinition = require("../utils/worker/settings.cjs");
+const setUpWorker = require('./behaviors/handler.cjs');
+const buildReport = require('./behaviors/report.cjs')
 
 const settings = getSettingsDefinition();
 
-
-const buildReport = async (workerName, message) => {
-    console.log(
-        `Received from worker ${workerName}: ${message}`,
-        '-- Building a new Stock Operations Report. --'
-    );
-    // Building report message
-}
-
-setUpWorker(new Worker('./src/workers/scheduler.cjs'), "report", buildReport, settings.reportPeriod);
+setUpWorker(new Worker('./src/workers/behaviors/scheduler.cjs'), "report", buildReport, settings.reportPeriod);
