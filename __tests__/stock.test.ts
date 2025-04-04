@@ -149,8 +149,7 @@ test('Integration of stock purchasing capabilities', async () => {
     } as Response
   })
 
-  const spy = vi.spyOn(storage, "getContext")
-  spy.mockImplementationOnce(
+  vi.spyOn(storage, "getContext").mockImplementationOnce(
     <T>() => {
       const actual = require("hono/context-storage")
       return {
@@ -158,10 +157,24 @@ test('Integration of stock purchasing capabilities', async () => {
         "var": {
           db: {
             "run": async (query) => {
+              console.log(query)
               expect(query).toStrictEqual(
                 "INSERT INTO PortfolioTransactions VALUES ('2039fdfd', 'NVDA', 8, 0.25, 2, '2025-04-04T08:22:49.460Z')"
               )
-            }
+            },
+            "runAndReadAll": async (query) => ({
+              getRowObjectsJson: () => [
+                {
+                  "code": "NVDA",
+                  "lastUpdated": "2025-04-03 07:12:00.296",
+                  "change": 0,
+                  "price": 0.25,
+                  "name": "NVIDIA Corporation",
+                  "sector": "Technology",
+                  "symbol": "NVDA"
+                },
+              ]
+            })
           }
         }
       }

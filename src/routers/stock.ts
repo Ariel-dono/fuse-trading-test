@@ -103,7 +103,7 @@ stock.openapi(
     const db = getContext<Env>().var.db;
     const reader = await db.runAndReadAll(
       "SELECT userId, symbol, sum(quantity) as quantity, price, sum(total) as total from PortfolioTransactions" +
-        " group by userId, symbol, price",
+      " group by userId, symbol, price",
     );
 
     const rows = reader.getRowObjectsJson();
@@ -139,39 +139,58 @@ stock.openapi(
   }),
   async (ctx: Context) => {
     const validatedBody = await ctx.req.json();
-    const requestConfig = {
-      headers: {
-        "x-api-key": settings.clientToken!,
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(validatedBody),
-      method: "post",
-    };
-
-    let purchaseUrl: string = `${settings.clientUrl}${settings.purchaseStockPath}`;
-
-    purchaseUrl = purchaseUrl.replace(":symbol", validatedBody.symbol);
-
-    const response = await fetch(purchaseUrl, requestConfig);
 
     const db = getContext<Env>().var.db;
-    if (response.status == 200) {
-      const res = await response.json();
-      const data = res.data.order;
-      await db.run(
-        `INSERT INTO PortfolioTransactions VALUES ` +
+    const reader = await db.runAndReadAll(`SELECT * from AvailableStock where symbol = '${validatedBody.symbol}'`);
+    const latestPriceDefinition = reader.getRowObjectsJson()[0];
+    const diff = Math.abs(validatedBody.price - latestPriceDefinition.price)
+    const diffPercentage = (diff / validatedBody.price)
+
+    if (diffPercentage < 0.2) {
+      const requestConfig = {
+        headers: {
+          "x-api-key": settings.clientToken!,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(validatedBody),
+        method: "post",
+      };
+
+      let purchaseUrl: string = `${settings.clientUrl}${settings.purchaseStockPath}`;
+
+      purchaseUrl = purchaseUrl.replace(":symbol", validatedBody.symbol);
+
+      const response = await fetch(purchaseUrl, requestConfig);
+
+      if (response.status == 200) {
+        const res = await response.json();
+        const data = res.data.order;
+        await db.run(
+          `INSERT INTO PortfolioTransactions VALUES ` +
           `('${validatedBody.userId}', '${data.symbol}', ${data.quantity}, ${data.price}, ${data.total}, '${DateTime.utc().toISO()}')`,
-      );
-      return ctx.json({
-        message: res.message,
-        order: data,
-      });
+        );
+        return ctx.json({
+          message: res.message,
+          order: data,
+        });
+      } else {
+        return ctx.json(
+          {
+            message: await response.text(),
+          },
+          response.status as ContentfulStatusCode,
+        );
+      }
     } else {
+      await db.run(
+        `INSERT INTO PortfolioFailedTransactions VALUES ` +
+          `('${validatedBody.userId}', '${validatedBody.symbol}', ${validatedBody.quantity}, ${validatedBody.price}, ${validatedBody.quantity * validatedBody.price}, '${DateTime.utc().toISO()}')`,
+      );
       return ctx.json(
         {
-          message: await response.text(),
+          message: "Failure: Price difference bigger than 2%",
         },
-        response.status as ContentfulStatusCode,
+        400 as ContentfulStatusCode,
       );
     }
   },
