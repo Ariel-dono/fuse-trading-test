@@ -16,6 +16,7 @@
     "@hono/zod-validator": "^0.4.3",
     "duckdb": "^1.2.1",
     "hono": "^4.7.5",
+    "luxon": "^3.6.1",
     "node-cron": "^3.0.3",
     "node-fetch": "^3.3.2",
     "nodemailer": "^6.10.0",
@@ -23,6 +24,7 @@
   },
   "devDependencies": {
     "@hono/eslint-config": "^1.1.1",
+    "@types/luxon": "^3.6.2",
     "@types/node": "^20.11.17",
     "@vitest/coverage-istanbul": "^3.0.9",
     "dotenv": "^16.4.7",

@@ -20,6 +20,7 @@ import {
   nextTokenParamsSchema,
 } from "../schemas/stock.js";
 import { getSettingsDefinition } from "../utils/service/settings.js";
+import { DateTime } from "luxon";
 
 type Env = {
   Variables: {
@@ -159,7 +160,7 @@ stock.openapi(
       const data = res.data.order;
       await db.run(
         `INSERT INTO PortfolioTransactions VALUES ` +
-          `('${validatedBody.userId}', '${data.symbol}', ${data.quantity}, ${data.price}, ${data.total})`,
+          `('${validatedBody.userId}', '${data.symbol}', ${data.quantity}, ${data.price}, ${data.total}, '${DateTime.utc().toISO()}')`,
       );
       return ctx.json({
         message: res.message,

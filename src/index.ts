@@ -25,7 +25,7 @@ const app = new OpenAPIHono<Env>();
 app.use(logger());
 
 app.use(async (ctx, next) => {
-  const instance = await DuckDBInstance.create("trading.db");
+  const instance = await DuckDBInstance.fromCache("trading.db");
   const conn = await instance.connect();
   init(conn);
 

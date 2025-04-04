@@ -1,14 +1,12 @@
 /* eslint-disable no-undef */
-
 const { DuckDBInstance } = require('@duckdb/node-api');
 const getSettingsDefinition = require("../../utils/worker/settings.cjs");
 const init = require("./initialize.cjs");
 
 const settings = getSettingsDefinition();
 
-
 const gatherAvailableStock = async (workerName, message) => {
-    const instance = await DuckDBInstance.create('trading.db');
+    const instance = await DuckDBInstance.fromCache('trading.db');
     const db = await instance.connect();
     init(db)
 
@@ -33,7 +31,7 @@ const gatherAvailableStock = async (workerName, message) => {
             }).toString();
             url = `${url}?${queryString}`
         }
-        console.log(url)
+        console.log("Request url: ", url)
         const response = await fetch(
             url,
             requestConfig
@@ -45,11 +43,11 @@ const gatherAvailableStock = async (workerName, message) => {
             pageNumber += 1
             console.log('printing page: ', pageNumber)
             currentToken = data.nextToken
-            data.items.forEach(priceDefinition => {
-                db.run(
+            data.items.forEach(async(priceDefinition) => {
+                await db.run(
                     `INSERT INTO AvailableStock VALUES `
                     + `('${priceDefinition.symbol}', '${priceDefinition.lastUpdated}', '${priceDefinition.change}', ${priceDefinition.price}, '${priceDefinition.name}', '${priceDefinition.sector}', '${priceDefinition.symbol}')`
-                    + ' ON CONFLICT DO UPDATE SET change = EXCLUDED.change, price  = EXCLUDED.price'
+                    + ' ON CONFLICT DO UPDATE SET change = EXCLUDED.change, price = EXCLUDED.price, lastUpdated = EXCLUDED.lastUpdated'
                 );
             });
         }

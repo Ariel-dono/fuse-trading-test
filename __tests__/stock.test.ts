@@ -35,6 +35,14 @@ beforeEach(() => {
   vi.mock("node-fetch", {
     default: vi.fn()
   })
+
+  vi.mock("luxon", () => ({
+    DateTime: {
+      utc: () => ({
+        toISO: () => '2025-04-04T08:22:49.460Z'
+      })
+    }
+  }))
 });
 
 test('Integration of available stock listing capabilities', async () => {
@@ -45,7 +53,7 @@ test('Integration of available stock listing capabilities', async () => {
         ...actual,
         "var": {
           db: {
-            "runAndReadAll": (query) => ({
+            "runAndReadAll": async (query) => ({
               getRowObjectsJson: () => [
                 {
                   "code": "2025-04-01T05:34:50.733Z:NVDA",
@@ -91,7 +99,7 @@ test('Getting the current stock portfolio', async () => {
         ...actual,
         "var": {
           db: {
-            "runAndReadAll": (query) => ({
+            "runAndReadAll": async (query) => ({
               getRowObjectsJson: () => [
                 {
                   "userId": "2039fdfd",
@@ -149,9 +157,9 @@ test('Integration of stock purchasing capabilities', async () => {
         ...actual,
         "var": {
           db: {
-            "run": (query) => {
+            "run": async (query) => {
               expect(query).toStrictEqual(
-                "INSERT INTO PortfolioTransactions VALUES ('2039fdfd', 'NVDA', 8, 0.25, 2)"
+                "INSERT INTO PortfolioTransactions VALUES ('2039fdfd', 'NVDA', 8, 0.25, 2, '2025-04-04T08:22:49.460Z')"
               )
             }
           }
