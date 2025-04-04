@@ -1,0 +1,27 @@
+{
+  "name": "fuse-trading-test",
+  "type": "module",
+  "scripts": {
+    "dev": "tsx watch src/index.ts",
+    "lint": "eslint src __tests__",
+    "format": "prettier --check --cache \"src/**/*.{js,ts,tsx}\" & prettier --write \"src/**/*.{js,ts,tsx}\"",
+    "test": "vitest --run",
+    "coverage": "vitest run --coverage"
+  },
+  "dependencies": {
+    "@hono/node-server": "^1.14.0",
+    "@hono/swagger-ui": "^0.5.1",
+    "@hono/zod-openapi": "^0.19.2",
+    "@hono/zod-validator": "^0.4.3",
+    "hono": "^4.7.5"
+  },
+  "devDependencies": {
+    "@hono/eslint-config": "^1.1.1",
+    "@types/node": "^20.11.17",
+    "@vitest/coverage-istanbul": "^3.0.9",
+    "eslint": "^9.23.0",
+    "prettier": "^3.5.3",
+    "tsx": "^4.7.1",
+    "vitest": "^3.0.9"
+  }
+}
