@@ -4,21 +4,30 @@
   "scripts": {
     "dev": "tsx watch src/index.ts",
     "lint": "eslint src __tests__",
-    "format": "prettier --check --cache \"src/**/*.{js,ts,tsx}\" & prettier --write \"src/**/*.{js,ts,tsx}\"",
+    "format": "prettier --check --cache \"src/**/*.{js,ts,tsx,.mjs,.cjs}\" & prettier --write \"src/**/*.{js,ts,tsx,.mjs,.cjs}\"",
     "test": "vitest --run",
     "coverage": "vitest run --coverage"
   },
   "dependencies": {
+    "@duckdb/node-api": "^1.2.1-alpha.17",
     "@hono/node-server": "^1.14.0",
     "@hono/swagger-ui": "^0.5.1",
     "@hono/zod-openapi": "^0.19.2",
     "@hono/zod-validator": "^0.4.3",
-    "hono": "^4.7.5"
+    "duckdb": "^1.2.1",
+    "hono": "^4.7.5",
+    "luxon": "^3.6.1",
+    "node-cron": "^3.0.3",
+    "node-fetch": "^3.3.2",
+    "nodemailer": "^6.10.0",
+    "ts-node": "^10.9.2"
   },
   "devDependencies": {
     "@hono/eslint-config": "^1.1.1",
+    "@types/luxon": "^3.6.2",
     "@types/node": "^20.11.17",
     "@vitest/coverage-istanbul": "^3.0.9",
+    "dotenv": "^16.4.7",
     "eslint": "^9.23.0",
     "prettier": "^3.5.3",
     "tsx": "^4.7.1",

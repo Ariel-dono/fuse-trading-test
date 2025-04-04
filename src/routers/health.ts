@@ -20,7 +20,7 @@ health.openapi(
       },
     },
   }),
-  (ctx: Context) =>
+  async (ctx: Context) =>
     ctx.json({
       message: "Up and running!",
     }),
